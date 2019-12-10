@@ -84,8 +84,8 @@ function sendToDexda(context, alert){
     var body = JSON.stringify(alert);
     //context.log(JSON.stringify(body));
     var request = new http.ClientRequest({
-        hostname: process.env["DEXDA_HOSTNAME"],
-        port: process.env["DEXDA_PORT"],
+        hostname: process.env["WEBHOOK_ALERT_HOSTNAME"],
+        port: process.env["WEBHOOK_ALERT_PORT"],
         path: "",
         method: "POST",
         headers: {

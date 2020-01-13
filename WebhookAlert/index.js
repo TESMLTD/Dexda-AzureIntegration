@@ -1,6 +1,7 @@
 //Copyright dexda limited
-//Pre-processor for azure alerts generated with standard/custom log analytics and application insights schemas
+//Pre-processor for azure alerts generated with webhook schemas
 //http://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-log-webhook
+//https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-metric-near-real-time
 
 var http = require('http')
 
@@ -21,8 +22,8 @@ module.exports = async function (context, req) {
                     for (i = 0; i < row.length; i++) {
                         template.SearchResults[table.columns[i].name] = row[i]
                         //context.log(JSON.stringify(template));
-                        sendToDexda(context, template)
                     }
+                    sendToDexda(context, template)
                 });
             });
         }
@@ -47,8 +48,8 @@ module.exports = async function (context, req) {
                 for (i = 0; i < row.length; i++) {
                       template.SearchResult[table.columns[i].name] = row[i]
                       context.log(JSON.stringify(template));
-                      sendToDexda(context, template)
                   }
+                  sendToDexda(context, template)
              });
         });
     }
@@ -67,13 +68,13 @@ module.exports = async function (context, req) {
                 for (i = 0; i < row.length; i++) {
                       template.data.SearchResult[table.columns[i].name] = row[i]
                       context.log(JSON.stringify(template));
-                      sendToDexda(context, template)
                   }
+                  sendToDexda(context, template)
              });
         });
     }
     else  {
-        context.log("Unrecognised log alert ")
+        context.log("Not a log alert as far as we can tell.")
         sendToDexda(context, req.body)
     }
     context.done()

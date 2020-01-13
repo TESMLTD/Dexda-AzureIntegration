@@ -15,16 +15,17 @@ module.exports = async function (context, req) {
                 //create a deep copy of the original req.body and use this as a template
                 let template = JSON.parse(JSON.stringify(req.body));
                 //delete the search result section in the template
-                template.data.alertContext.SearchResult = {}
+                template.data.alertContext.SearchResults = {}
 
-                //iterate the SearchResult table and add a single search result to the template
-                req.body.data.alertContext.SearchResult.tables.forEach(function(table){
+                //iterate the SearchResults table and add a single search result to the template
+                req.body.data.alertContext.SearchResults.tables.forEach(function(table){
                     table.rows.forEach(function(row){
                         for (i = 0; i < row.length; i++) {
-                            template.data.alertContext.SearchResult[table.columns[i].name] = row[i]
+                            //create key value pairs
+                            template.data.alertContext.SearchResults[table.columns[i].name] = row[i]
                             ///context.log(JSON.stringify(template));
-                            sendToDexda(context, template)
                         }
+                        sendToDexda(context, template)
                     });
                 });
             }
@@ -34,6 +35,20 @@ module.exports = async function (context, req) {
                 sendToDexda(context, req.body)
             }
         }
+        else if (req.body.data.essentials.monitoringService == "Platform") {
+            //platform alerts contain a list of affected targets that need to be flattened creating one alert per target
+            //create a deep copy of the original req.body and use this as a template
+            let template = JSON.parse(JSON.stringify(req.body));
+            //delete the search result section in the template
+            template.data.essentials.alertTargetIDs = {}
+
+            //iterate the alertTargetIDs list and add a single search result to the template
+            req.body.data.essentials.alertTargetIDs.forEach(function(alertTargetID){
+                template.data.essentials.alertTargetID = alertTargetID
+                ///context.log(JSON.stringify(template));
+                sendToDexda(context, template)
+            });
+        } 
         else
         {
                 //not a log alert so send as is...

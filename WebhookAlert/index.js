@@ -33,40 +33,40 @@ module.exports = async function (context, req) {
             sendToDexda(context, req.body)
         }
     }
-    else if ("SearchResult" in req.body) {
+    else if ("SearchResults" in req.body) {
         //log alert for log analytics with standard json payload
         context.log("Log alert for log analytics standard json payload ")
 
         //create a deep copy of the original req.body and use this as a template
         let template = JSON.parse(JSON.stringify(req.body));
         //delete the search results section in the template)
-        template.SearchResult = {}
+        template.SearchResults = {}
 
         //iterate the SearchResults table and add a single search result to the template
-        req.body.SearchResult.tables.forEach(function(table){
+        req.body.SearchResults.tables.forEach(function(table){
             table.rows.forEach(function(row){
                 for (i = 0; i < row.length; i++) {
-                      template.SearchResult[table.columns[i].name] = row[i]
+                      template.SearchResults[table.columns[i].name] = row[i]
                       context.log(JSON.stringify(template));
                   }
                   sendToDexda(context, template)
              });
         });
     }
-    else if ("SearchResult" in req.body.data) {
+    else if ("SearchResults" in req.body.data) {
         //log alert for application insights with standard json payload
         context.log("Log alert for application insights standard json payload ")
         
         //create a deep copy of the original req.body and use this as a template
         let template = JSON.parse(JSON.stringify(req.body));
         //delete the search result section in the template)
-        template.data.SearchResult = {}
+        template.data.SearchResults = {}
 
         //iterate the SearchResult table and add a single search result to the template
-        req.body.data.SearchResult.tables.forEach(function(table){
+        req.body.data.SearchResults.tables.forEach(function(table){
             table.rows.forEach(function(row){
                 for (i = 0; i < row.length; i++) {
-                      template.data.SearchResult[table.columns[i].name] = row[i]
+                      template.data.SearchResults[table.columns[i].name] = row[i]
                       context.log(JSON.stringify(template));
                   }
                   sendToDexda(context, template)
